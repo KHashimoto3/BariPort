@@ -1,2 +1,2 @@
 # BariPort
-BariPortの開発用リポジトリです。
+BariPortのバックエンド開発用リポジトリです。
