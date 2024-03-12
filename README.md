@@ -1,2 +1,2 @@
 # BariPort
-BariPortのバックエンド開発用リポジトリです。
+JAPAN CONNECT HACKTHON 用の、バックエンドリポジトリ
