@@ -127,3 +127,31 @@ paths:
           description: "userIdまたはchatRoomIdが不正です。"
         "500":
           description: "登録中に何らかのエラーが発生しました。"
+  /messages:
+    get:
+      tags:
+        - "messages"
+      summary: "メッセージ一覧取得"
+      description: "メッセージ一覧を取得します。"
+      operationId: "getMessages"
+      parameters:
+        - name: "chatRoomId"
+          in: "query"
+          required: true
+          schema:
+            type: "integer"
+      responses:
+        "200":
+          description: "成功"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/messages"
+        "400":
+          description: "chatRoomIdが渡されていないか、不正です。"
+        "404":
+          description: "メッセージが存在しません。"
+        "500":
+          description: "取得中に何らかのエラーが発生しました。"
