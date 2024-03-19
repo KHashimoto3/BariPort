@@ -102,3 +102,28 @@ paths:
           description: "プロジェクトが存在しません。"
         "500":
           description: "取得中に何らかのエラーが発生しました。"
+  /chat_room_participants:
+    post:
+      tags:
+        - "chat_room_participants"
+      summary: "チャットルーム参加登録"
+      description: "チャットルームの参加を登録します。"
+      operationId: "postChatRoomParticipants"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: "object"
+              properties:
+                userId:
+                  type: "integer"
+                chatRoomId:
+                  type: "integer"
+      responses:
+        "201":
+          description: "成功"
+        "400":
+          description: "userIdまたはchatRoomIdが不正です。"
+        "500":
+          description: "登録中に何らかのエラーが発生しました。"
