@@ -212,3 +212,23 @@ paths:
           description: "userIdまたはchatRoomIdまたはtextが渡されていないか、不正です。"
         "500":
           description: "登録中に何らかのエラーが発生しました。"
+  /reviews/list:
+    get:
+      tags:
+        - "reviews"
+      summary: "レビュー一覧取得"
+      description: "レビュー一覧を取得します。"
+      operationId: "getReviews"
+      responses:
+        "200":
+          description: "成功"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/reviews"
+        "404":
+          description: "レビューが存在しません。"
+        "500":
+          description: "取得中に何らかのエラーが発生しました。"
