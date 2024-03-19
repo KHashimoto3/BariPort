@@ -35,6 +35,8 @@ components:
           type: "string"
         type:
           type: "integer"
+        projectId:
+          type: "integer"
     messages:
       type: "object"
       properties:
@@ -124,9 +126,37 @@ paths:
         "201":
           description: "成功"
         "400":
-          description: "userIdまたはchatRoomIdが不正です。"
+          description: "userIdまたはchatRoomIdが渡されていないか、不正です。"
         "500":
           description: "登録中に何らかのエラーが発生しました。"
+  /chat_room:
+    get:
+      tags:
+        - "chat_rooms"
+      summary: "チャットルーム情報取得"
+      description: "チャットルーム情報を取得します。"
+      operationId: "getChatRooms"
+      parameters:
+        - name: "projectId"
+          in: "query"
+          required: true
+          schema:
+            type: "integer"
+      responses:
+        "200":
+          description: "成功"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/chat_rooms"
+        "400":
+          description: "projectIdが渡されていないか、不正です。"
+        "404":
+          description: "チャットルームが存在しません。"
+        "500":
+          description: "取得中に何らかのエラーが発生しました。"
   /messages:
     get:
       tags:
@@ -155,3 +185,30 @@ paths:
           description: "メッセージが存在しません。"
         "500":
           description: "取得中に何らかのエラーが発生しました。"
+  /message:
+    post:
+      tags:
+        - "messages"
+      summary: "メッセージ投稿"
+      description: "メッセージを投稿します。"
+      operationId: "postMessage"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: "object"
+              properties:
+                userId:
+                  type: "integer"
+                chatRoomId:
+                  type: "integer"
+                text:
+                  type: "string"
+      responses:
+        "201":
+          description: "成功"
+        "400":
+          description: "userIdまたはchatRoomIdまたはtextが渡されていないか、不正です。"
+        "500":
+          description: "登録中に何らかのエラーが発生しました。"
