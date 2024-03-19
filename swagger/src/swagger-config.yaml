@@ -82,11 +82,23 @@ security:
   - identity_server_auth:
       - api
 paths:
-  /test:
+  /projects/list:
     get:
-      summary: "Runs a test request against the Identity Server demo API"
+      tags:
+        - "projects"
+      summary: "プロジェクト一覧取得"
+      description: "プロジェクト一覧を取得します。"
+      operationId: "getProjects"
       responses:
-        401:
-          description: "Unauthorized"
-        200:
-          description: "OK"
+        "200":
+          description: "成功"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/projects"
+        "404":
+          description: "プロジェクトが存在しません。"
+        "500":
+          description: "取得中に何らかのエラーが発生しました。"
