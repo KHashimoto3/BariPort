@@ -227,6 +227,8 @@ paths:
                   type: "string" # BEGIN: chatRoomId type
                 text:
                   type: "string"
+                sendAt:
+                  type: "string"
       responses:
         "201":
           description: "成功"
@@ -263,6 +265,8 @@ paths:
                     evaluationScore:
                       type: "integer"
                     description:
+                      type: "string"
+                    sendAt:
                       type: "string"
         "404":
           description: "レビューが存在しません。"
