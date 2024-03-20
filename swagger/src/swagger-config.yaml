@@ -118,10 +118,18 @@ paths:
             schema:
               type: "object"
               properties:
-                userId:
-                  type: "integer"
-                chatRoomId:
-                  type: "integer"
+                chatRooom:
+                  type: "object"
+                  properties:
+                    name:
+                      type: "string"
+                    description:
+                      type: "string"
+                    company:
+                      type: "object"
+                      properties:
+                        name:
+                          type: "string"
       responses:
         "201":
           description: "成功"
