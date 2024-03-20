@@ -1,14 +1,14 @@
 import { SSTConfig } from "sst";
-import { ExampleStack } from "./stacks/ExampleStack";
+import { BariPortStack } from "./stacks/BariPortStack";
 
 export default {
   config(_input) {
     return {
-      name: "bari-port-back",
+      name: "bari-port-back-prod",
       region: "ap-northeast-1", // Tokyo
     };
   },
   stacks(app) {
-    app.stack(ExampleStack);
+    app.stack(BariPortStack);
   },
 } satisfies SSTConfig;
