@@ -99,7 +99,21 @@ paths:
               schema:
                 type: "array"
                 items:
-                  $ref: "#/components/schemas/projects"
+                  type: "object"
+                  properties:
+                    id:
+                      type: "integer"
+                    name:
+                      type: "string"
+                    description:
+                      type: "string"
+                    company:
+                      type: "object"
+                      properties:
+                        id:
+                          type: "integer"
+                        name:
+                          type: "string"
         "404":
           description: "プロジェクトが存在しません。"
         "500":
