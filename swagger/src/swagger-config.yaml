@@ -12,7 +12,7 @@ components:
       type: "object"
       properties:
         id:
-          type: "string"
+          type: "string" # BEGIN: id type
         displayName:
           type: "string"
         apiKey:
@@ -21,60 +21,60 @@ components:
       type: "object"
       properties:
         id:
-          type: "integer" # "以降、bigintに置き換え"
+          type: "string" # BEGIN: id type
         userId:
-          type: "integer"
+          type: "string" # BEGIN: userId type
         chatRoomId:
-          type: "integer"
+          type: "string" # BEGIN: chatRoomId type
     chat_rooms:
       type: "object"
       properties:
         id:
-          type: "integer"
+          type: "string" # BEGIN: id type
         name:
           type: "string"
         type:
-          type: "integer"
+          type: "string" # BEGIN: type type
         projectId:
-          type: "integer"
+          type: "string" # BEGIN: projectId type
     messages:
       type: "object"
       properties:
         id:
-          type: "integer"
+          type: "string" # BEGIN: id type
         userId:
-          type: "integer"
+          type: "string" # BEGIN: userId type
         chatRoomId:
-          type: "integer"
+          type: "string" # BEGIN: chatRoomId type
         text:
-          type: "string" # "text"
+          type: "string" # BEGIN: text type
     reviews:
       type: "object"
       properties:
         id:
-          type: "integer"
+          type: "string" # BEGIN: id type
         companyId:
-          type: "integer"
+          type: "string" # BEGIN: companyId type
         userId:
-          type: "integer"
+          type: "string" # BEGIN: userId type
         evaluationScore:
-          type: "string" # "本当にstringでいいのか？"
+          type: "integer"
         description:
           type: "string"
     companies:
       type: "object"
       properties:
         id:
-          type: "integer"
+          type: "string" # BEGIN: id type
         name:
           type: "string"
     projects:
       type: "object"
       properties:
         id:
-          type: "integer"
+          type: "string" # BEGIN: id type
         companyId:
-          type: "integer"
+          type: "string" # BEGIN: companyId type
         name:
           type: "string"
         description:
@@ -102,7 +102,7 @@ paths:
                   type: "object"
                   properties:
                     id:
-                      type: "integer"
+                      type: "string" # BEGIN: id type
                     name:
                       type: "string"
                     description:
@@ -111,7 +111,7 @@ paths:
                       type: "object"
                       properties:
                         id:
-                          type: "integer"
+                          type: "string" # BEGIN: id type
                         name:
                           type: "string"
         "404":
@@ -163,7 +163,7 @@ paths:
           in: "query"
           required: true
           schema:
-            type: "integer"
+            type: "string" # BEGIN: projectId type
       responses:
         "200":
           description: "成功"
@@ -191,7 +191,7 @@ paths:
           in: "query"
           required: true
           schema:
-            type: "integer"
+            type: "string" # BEGIN: chatRoomId type
       responses:
         "200":
           description: "成功"
@@ -222,9 +222,9 @@ paths:
               type: "object"
               properties:
                 userId:
-                  type: "integer"
+                  type: "string" # BEGIN: userId type
                 chatRoomId:
-                  type: "integer"
+                  type: "string" # BEGIN: chatRoomId type
                 text:
                   type: "string"
       responses:
