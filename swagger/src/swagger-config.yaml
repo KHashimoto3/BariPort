@@ -249,7 +249,21 @@ paths:
               schema:
                 type: "array"
                 items:
-                  $ref: "#/components/schemas/reviews"
+                  type: "object"
+                  properties:
+                    id:
+                      type: "string" # BEGIN: id type
+                    company:
+                      type: "object"
+                      properties:
+                        name:
+                          type: "string"
+                    userId:
+                      type: "string" # BEGIN: userId type
+                    evaluationScore:
+                      type: "integer"
+                    description:
+                      type: "string"
         "404":
           description: "レビューが存在しません。"
         "500":
