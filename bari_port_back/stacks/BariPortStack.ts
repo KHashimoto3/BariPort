@@ -2,7 +2,7 @@ import { Api, StackContext, Table } from "sst/constructs";
 
 export function BariPortStack({ stack }: StackContext) {
   //DynamoDB table
-  const users_table = new Table(stack, "Users", {
+  const users_table = new Table(stack, "users", {
     fields: {
       id: "string",
       displayName: "string",
@@ -17,6 +17,7 @@ export function BariPortStack({ stack }: StackContext) {
       userId: "string",
       chatRoomId: "string",
       text: "string",
+      sendAt: "string",
     },
     primaryIndex: { partitionKey: "id" },
   });
@@ -51,6 +52,7 @@ export function BariPortStack({ stack }: StackContext) {
       userId: "string",
       evaluationScore: "number",
       description: "string",
+      sendAt: "string",
     },
     primaryIndex: { partitionKey: "id" },
   });
