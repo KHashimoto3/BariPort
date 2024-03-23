@@ -29,12 +29,12 @@ type GetReviewCompany struct {
 }
 
 type GetReviewsResponse struct {
-	Id              string           `json:"id"`
-	SendAt          string           `json:"sendAt"`
-	ImageUrl        string           `json:"imageUrl"`
-	Company         GetReviewCompany `json:"company"`
-	EvaluationScore int              `json:"evaluationScore"`
-	Description     string           `json:"description"`
+	Id              string `json:"id"`
+	SendAt          string `json:"sendAt"`
+	ImgUrl          string `json:"imgUrl"`
+	CompanyName     string `json:"companyName"`
+	EvaluationScore int    `json:"evaluationScore"`
+	Description     string `json:"description"`
 }
 
 func HandlerHello(ctx context.Context) (events.APIGatewayProxyResponse, error) {
@@ -108,8 +108,8 @@ func HandlerGetReviews(ctx context.Context) (events.APIGatewayProxyResponse, err
 		res = append(res, GetReviewsResponse{
 			Id:              review.Id,
 			SendAt:          review.SendAt,
-			ImageUrl:        review.ImageUrl,
-			Company:         company,
+			ImgUrl:          review.ImgUrl,
+			CompanyName:     company.Name,
 			EvaluationScore: review.EvaluationScore,
 			Description:     review.Description,
 		})

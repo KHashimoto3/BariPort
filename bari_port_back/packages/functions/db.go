@@ -25,18 +25,12 @@ type Company struct {
 
 // projectsテーブル
 type Project struct {
-<<<<<<< HEAD
 	Id          string `dynamo:"id"`
 	CompanyId   string `dynamo:"companyId"`
-	Name        string `dynamo:"name"`
-=======
-	Id 			string `dynamo:"id"`
-	CompanyId 	string `dynamo:"companyId"`
-	ProjectName 		string `dynamo:"name"`
->>>>>>> 70520a5ebc4359bff4a8f1b99e2e217142cb89d3
+	ProjectName string `dynamo:"name"`
 	Description string `dynamo:"description"`
-	TestUrl 	string `dynamo:"testUrl"`
-	ChatRoomId 	string `dynamo:"chatRoomId"`
+	TestUrl     string `dynamo:"testUrl"`
+	ChatRoomId  string `dynamo:"chatRoomId"`
 }
 
 // reviewsテーブル
@@ -45,7 +39,7 @@ type Review struct {
 	CompanyId       string `dynamo:"companyId"`
 	UserId          string `dynamo:"userId"`
 	EvaluationScore int    `dynamo:"evaluationScore"`
-	ImageUrl        string `dynamo:"evaluationScore"`
+	ImgUrl          string `dynamo:"imgUrl"`
 	Description     string `dynamo:"description"`
 	SendAt          string `dynamo:"sendAt"`
 }
