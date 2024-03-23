@@ -15,8 +15,11 @@ export function BariPortStack({ stack }: StackContext) {
     fields: {
       id: "string",
       userId: "string",
+      companyId: "string",
       chatRoomId: "string",
       text: "string",
+      imgUrl: "string",
+      isMine: "string",
       sendAt: "string",
     },
     primaryIndex: { partitionKey: "id" },
@@ -40,7 +43,11 @@ export function BariPortStack({ stack }: StackContext) {
       id: "string",
       name: "string",
       type: "number",
+      imgUrl: "string",
+      companyId: "string",
       projectId: "string",
+      latestMessage: "string",
+      latestMessageSendAt: "string",
     },
     primaryIndex: { partitionKey: "id" },
   });
@@ -70,8 +77,10 @@ export function BariPortStack({ stack }: StackContext) {
     fields: {
       id: "string",
       companyId: "string",
-      name: "string",
+      projectName: "string",
       description: "string",
+      testUrl: "string",
+      chatRoomId: "string",
     },
     primaryIndex: { partitionKey: "id" },
   });

@@ -25,10 +25,18 @@ type Company struct {
 
 // projectsテーブル
 type Project struct {
+<<<<<<< HEAD
 	Id          string `dynamo:"id"`
 	CompanyId   string `dynamo:"companyId"`
 	Name        string `dynamo:"name"`
+=======
+	Id 			string `dynamo:"id"`
+	CompanyId 	string `dynamo:"companyId"`
+	ProjectName 		string `dynamo:"name"`
+>>>>>>> 70520a5ebc4359bff4a8f1b99e2e217142cb89d3
 	Description string `dynamo:"description"`
+	TestUrl 	string `dynamo:"testUrl"`
+	ChatRoomId 	string `dynamo:"chatRoomId"`
 }
 
 // reviewsテーブル

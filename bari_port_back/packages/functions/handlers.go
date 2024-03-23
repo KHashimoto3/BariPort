@@ -17,10 +17,11 @@ type GetProjectCompany struct {
 }
 
 type GetProjectsResponse struct {
-	Id          string            `json:"id"`
-	Name        string            `json:"name"`
-	Description string            `json:"description"`
-	Company     GetProjectCompany `json:"company"`
+	CompanyName string `json:"companyName"`
+	ProjectName string `json:"projectName"`
+	Description string `json:"description"`
+	TestUrl     string `json:"testUrl"`
+	ChatRoomId  string `json:"chatRoomId"`
 }
 
 type GetReviewCompany struct {
@@ -68,10 +69,11 @@ func HandlerGetProjects(ctx context.Context) (events.APIGatewayProxyResponse, er
 		}
 
 		res = append(res, GetProjectsResponse{
-			Id:          project.Id,
-			Name:        project.Name,
+			CompanyName: company.Name,
+			ProjectName: "事業名HOGEHOGE",
 			Description: project.Description,
-			Company:     company,
+			TestUrl:     project.TestUrl,
+			ChatRoomId:  project.ChatRoomId,
 		})
 	}
 
