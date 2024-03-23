@@ -106,6 +106,8 @@ export function BariPortStack({ stack }: StackContext) {
       "GET /hello": "packages/functions/handlers/hello.go",
       "GET /projects/list": "packages/functions/handlers/getProjects.go",
       "GET /reviews/list": "packages/functions/handlers/getReviews.go",
+      "POST /chat_room_participants":
+        "packages/functions/handlers/postChatRoomParticipants.go",
     },
   });
 
