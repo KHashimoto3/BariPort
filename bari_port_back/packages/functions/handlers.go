@@ -74,19 +74,29 @@ type GetReviewsResponse struct {
 	Description     string `json:"description"`
 }
 
+type GetChatRoomResponse struct {
+	Id                  string `json:"id"`
+	Name                string `json:"name"`
+	CompanyName         string `json:"companyName"`
+	ProjectName         string `json:"projectName"`
+	ImgUrl              string `json:"imgUrl"`
+	LatestMessage       string `json:"latestMessage"`
+	LatestMessageSendAt string `json:"latestMessageSendAt"`
+}
+
 type PostChatRoomParticipantRequest struct {
-	Id 	 string `json:"id"`
+	Id         string `json:"id"`
 	ChatRoomId string `json:"chatRoomId"`
-	UserId	 string `json:"userId"`
+	UserId     string `json:"userId"`
 }
 
 type PostMessageRequest struct {
-	Id string `json:"id"`
-	UserId string `json:"userId"`
-	CompanyId string `json:"companyId"`
+	Id         string `json:"id"`
+	UserId     string `json:"userId"`
+	CompanyId  string `json:"companyId"`
 	ChatRoomId string `json:"chatRoomId"`
-	Text string `json:"text"`
-	ImgUrl string `json:"imgUrl"`
+	Text       string `json:"text"`
+	ImgUrl     string `json:"imgUrl"`
 }
 
 func HandlerHello(ctx context.Context) (events.APIGatewayProxyResponse, error) {
@@ -229,7 +239,46 @@ func HandlerGetReviews(ctx context.Context) (events.APIGatewayProxyResponse, err
 	}, nil
 }
 
-//チャット参加者を送信
+// チャットルーム一覧を返すLambdaハンドラ
+func HandlerChatRooms(ctx context.Context) (events.APIGatewayProxyResponse, error) {
+	chatRooms, err := GetChatRooms()
+
+	if err != nil {
+		return events.APIGatewayProxyResponse{}, err
+	}
+
+	var res []GetChatRoomResponse
+	for _, chatRoom := range chatRooms {
+		companyRes, err := GetCompany(chatRoom.CompanyId)
+		if err != nil {
+			return events.APIGatewayProxyResponse{}, err
+		}
+
+		projectRes, err := GetProject(chatRoom.ProjectId)
+		if err != nil {
+			return events.APIGatewayProxyResponse{}, err
+		}
+
+		res = append(res, GetChatRoomResponse{
+			Id:                  chatRoom.Id,
+			Name:                chatRoom.Name,
+			CompanyName:         companyRes.Name,
+			ProjectName:         projectRes.ProjectName,
+			ImgUrl:              chatRoom.ImgUrl,
+			LatestMessage:       chatRoom.LatestMessage,
+			LatestMessageSendAt: chatRoom.LatestMessageSendAt,
+		})
+	}
+
+	body, _ := json.Marshal(res)
+
+	return events.APIGatewayProxyResponse{
+		Body:       string(body),
+		StatusCode: 200,
+	}, nil
+}
+
+// チャット参加者を送信
 func HandlerPutChatRoomParticipant(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	requestBody := request.Body
 
@@ -252,7 +301,7 @@ func HandlerPutChatRoomParticipant(ctx context.Context, request events.APIGatewa
 	})
 
 	return events.APIGatewayProxyResponse{
-		Body: string(body),
+		Body:       string(body),
 		StatusCode: 201,
 	}, nil
 }
@@ -277,10 +326,10 @@ func HandlerPostMessage(ctx context.Context, request events.APIGatewayProxyReque
 		UserId: messageRequest.UserId,
 		CompanyId: messageRequest.CompanyId,
 		ChatRoomId: messageRequest.ChatRoomId,
-		Text: messageRequest.Text,
-		ImgUrl: messageRequest.ImgUrl,
-		IsMine: "false",
-		SendAt: sendTime,
+		Text:       messageRequest.Text,
+		ImgUrl:     messageRequest.ImgUrl,
+		IsMine:     "false",
+		SendAt:     sendTime,
 	}
 
 	_, err = PostMessage(message)
@@ -294,7 +343,7 @@ func HandlerPostMessage(ctx context.Context, request events.APIGatewayProxyReque
 	})
 
 	return events.APIGatewayProxyResponse{
-		Body: string(body),
+		Body:       string(body),
 		StatusCode: 201,
 	}, nil
 
