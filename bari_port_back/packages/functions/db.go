@@ -26,8 +26,9 @@ type Company struct {
 // projectsテーブル
 type Project struct {
 	Id          string `dynamo:"id"`
+	projectName string `dynamo:"projectName"`
 	CompanyId   string `dynamo:"companyId"`
-	ProjectName string `dynamo:"name"`
+	ProjectId   string `dynamo:"projectId"`
 	Description string `dynamo:"description"`
 	TestUrl     string `dynamo:"testUrl"`
 	ChatRoomId  string `dynamo:"chatRoomId"`

@@ -177,7 +177,7 @@ func HandlerChatRooms(ctx context.Context) (events.APIGatewayProxyResponse, erro
 			Id:                  chatRoom.Id,
 			Name:                chatRoom.Name,
 			CompanyName:         companyRes.Name,
-			ProjectName:         projectRes.ProjectName,
+			ProjectName:         projectRes.projectName,
 			ImgUrl:              chatRoom.ImgUrl,
 			LatestMessage:       chatRoom.latestMessage,
 			LatestMessageSendAt: chatRoom.latestMessageSendAt,
