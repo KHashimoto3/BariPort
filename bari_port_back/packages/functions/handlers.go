@@ -12,15 +12,28 @@ type HelloResponse struct {
 }
 
 type GetProjectCompany struct {
-	Id		string `json:"id"`
-	Name 	string `json:"name"`
+	Id   string `json:"id"`
+	Name string `json:"name"`
 }
 
 type GetProjectsResponse struct {
-	Id		string `json:"id"`
-	Name 	string `json:"name"`
-	Description string `json:"description"`
-	Company GetProjectCompany `json:"company"`
+	Id          string            `json:"id"`
+	Name        string            `json:"name"`
+	Description string            `json:"description"`
+	Company     GetProjectCompany `json:"company"`
+}
+
+type GetReviewCompany struct {
+	Name string `json:"name"`
+}
+
+type GetReviewsResponse struct {
+	Id              string           `json:"id"`
+	SendAt          string           `json:"sendAt"`
+	ImageUrl        string           `json:"imageUrl"`
+	Company         GetReviewCompany `json:"company"`
+	EvaluationScore int              `json:"evaluationScore"`
+	Description     string           `json:"description"`
 }
 
 func HandlerHello(ctx context.Context) (events.APIGatewayProxyResponse, error) {
@@ -33,7 +46,7 @@ func HandlerHello(ctx context.Context) (events.APIGatewayProxyResponse, error) {
 	}, nil
 }
 
-//プロジェクトの一覧を、企業情報と共に返すLambdaハンドラ
+// プロジェクトの一覧を、企業情報と共に返すLambdaハンドラ
 func HandlerGetProjects(ctx context.Context) (events.APIGatewayProxyResponse, error) {
 	projects, err := GetProjects()
 
@@ -50,15 +63,53 @@ func HandlerGetProjects(ctx context.Context) (events.APIGatewayProxyResponse, er
 		}
 
 		company := GetProjectCompany{
-			Id: companyRes.Id,
+			Id:   companyRes.Id,
 			Name: companyRes.Name,
 		}
 
 		res = append(res, GetProjectsResponse{
-			Id: project.Id,
-			Name: project.Name,
+			Id:          project.Id,
+			Name:        project.Name,
 			Description: project.Description,
-			Company: company,
+			Company:     company,
+		})
+	}
+
+	body, _ := json.Marshal(res)
+
+	return events.APIGatewayProxyResponse{
+		Body:       string(body),
+		StatusCode: 200,
+	}, nil
+}
+
+// 口コミの一覧を、企業情報と共に返すLambdaハンドラ
+func HandlerGetReviews(ctx context.Context) (events.APIGatewayProxyResponse, error) {
+	reviews, err := GetReviews()
+
+	if err != nil {
+		return events.APIGatewayProxyResponse{}, err
+	}
+
+	var res []GetReviewsResponse
+	for _, review := range reviews {
+
+		companyRes, err := GetCompany(review.CompanyId)
+		if err != nil {
+			return events.APIGatewayProxyResponse{}, err
+		}
+
+		company := GetReviewCompany{
+			Name: companyRes.Name,
+		}
+
+		res = append(res, GetReviewsResponse{
+			Id:              review.Id,
+			SendAt:          review.SendAt,
+			ImageUrl:        review.ImageUrl,
+			Company:         company,
+			EvaluationScore: review.EvaluationScore,
+			Description:     review.Description,
 		})
 	}
 
