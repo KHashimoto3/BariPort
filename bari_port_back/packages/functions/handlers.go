@@ -17,6 +17,7 @@ type GetProjectCompany struct {
 }
 
 type GetProjectsResponse struct {
+<<<<<<< HEAD
 	Id          string            `json:"id"`
 	Name        string            `json:"name"`
 	Description string            `json:"description"`
@@ -44,6 +45,26 @@ type GetMessagesResponse struct {
 	Text     string             `dynamo:"text"`
 	ImgUrl   string             `dynamo:"imgUrl"`
 	SendAt   string             `dynamo:"sendAt"`
+=======
+	CompanyName string `json:"companyName"`
+	ProjectName string `json:"projectName"`
+	Description string `json:"description"`
+	TestUrl     string `json:"testUrl"`
+	ChatRoomId  string `json:"chatRoomId"`
+}
+
+type GetReviewCompany struct {
+	Name string `json:"name"`
+}
+
+type GetReviewsResponse struct {
+	Id              string `json:"id"`
+	SendAt          string `json:"sendAt"`
+	ImgUrl          string `json:"imgUrl"`
+	CompanyName     string `json:"companyName"`
+	EvaluationScore int    `json:"evaluationScore"`
+	Description     string `json:"description"`
+>>>>>>> fbcabf00f0b295fe419fcd1cde6ca83f9b2225df
 }
 
 func HandlerHello(ctx context.Context) (events.APIGatewayProxyResponse, error) {
@@ -78,10 +99,18 @@ func HandlerGetProjects(ctx context.Context) (events.APIGatewayProxyResponse, er
 		}
 
 		res = append(res, GetProjectsResponse{
+<<<<<<< HEAD
 			Id:          project.Id,
 			Name:        project.Name,
 			Description: project.Description,
 			Company:     company,
+=======
+			CompanyName: company.Name,
+			ProjectName: "事業名HOGEHOGE",
+			Description: project.Description,
+			TestUrl:     project.TestUrl,
+			ChatRoomId:  project.ChatRoomId,
+>>>>>>> fbcabf00f0b295fe419fcd1cde6ca83f9b2225df
 		})
 	}
 
@@ -141,6 +170,44 @@ func HandlerGetMessages(ctx context.Context, request events.APIGatewayProxyReque
 			Text:     message.Text,
 			ImgUrl:   message.ImgUrl,
 			SendAt:   message.SendAt,
+		})
+	}
+
+	body, _ := json.Marshal(res)
+
+	return events.APIGatewayProxyResponse{
+		Body:       string(body),
+		StatusCode: 200,
+	}, nil
+}
+
+// 口コミの一覧を、企業情報と共に返すLambdaハンドラ
+func HandlerGetReviews(ctx context.Context) (events.APIGatewayProxyResponse, error) {
+	reviews, err := GetReviews()
+
+	if err != nil {
+		return events.APIGatewayProxyResponse{}, err
+	}
+
+	var res []GetReviewsResponse
+	for _, review := range reviews {
+
+		companyRes, err := GetCompany(review.CompanyId)
+		if err != nil {
+			return events.APIGatewayProxyResponse{}, err
+		}
+
+		company := GetReviewCompany{
+			Name: companyRes.Name,
+		}
+
+		res = append(res, GetReviewsResponse{
+			Id:              review.Id,
+			SendAt:          review.SendAt,
+			ImgUrl:          review.ImgUrl,
+			CompanyName:     company.Name,
+			EvaluationScore: review.EvaluationScore,
+			Description:     review.Description,
 		})
 	}
 

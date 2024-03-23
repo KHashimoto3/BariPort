@@ -1,0 +1,4 @@
+.idea/
+package.json
+pnpm-lock.yaml
+node_modules/

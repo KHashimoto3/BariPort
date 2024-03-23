@@ -27,8 +27,10 @@ type Company struct {
 type Project struct {
 	Id          string `dynamo:"id"`
 	CompanyId   string `dynamo:"companyId"`
-	Name        string `dynamo:"name"`
+	ProjectName string `dynamo:"name"`
 	Description string `dynamo:"description"`
+	TestUrl     string `dynamo:"testUrl"`
+	ChatRoomId  string `dynamo:"chatRoomId"`
 }
 
 // messagesテーブル
@@ -56,6 +58,17 @@ type User struct {
 	Id          string `dynamo:"id"`
 	DisplayName string `dynamo:"displayName"`
 	ApiKey      string `dynamo:"apiKey"`
+}
+
+// reviewsテーブル
+type Review struct {
+	Id              string `dynamo:"id"`
+	CompanyId       string `dynamo:"companyId"`
+	UserId          string `dynamo:"userId"`
+	EvaluationScore int    `dynamo:"evaluationScore"`
+	ImgUrl          string `dynamo:"imgUrl"`
+	Description     string `dynamo:"description"`
+	SendAt          string `dynamo:"sendAt"`
 }
 
 // companyのデータを取得
@@ -111,19 +124,6 @@ func GetChatRooms() ([]ChatRoom, error) {
 	return chatRooms, nil
 }
 
-func GetUsers() ([]User, error) {
-	table := connect(os.Getenv("SST_Table_tableName_users"))
-	var users []User
-	err := table.Scan().All(&users)
-	if err != nil {
-		if errors.Is(err, dynamo.ErrNotFound) {
-			return users, errors.New("users not found")
-		}
-		return users, err
-	}
-	return users, nil
-}
-
 func GetUser(userId string) (User, error) {
 	table := connect(os.Getenv("SST_Table_tableName_users"))
 	var user User
@@ -135,4 +135,17 @@ func GetUser(userId string) (User, error) {
 		return user, err
 	}
 	return user, nil
+}
+
+func GetReviews() ([]Review, error) {
+	table := connect(os.Getenv("SST_Table_tableName_reviews"))
+	var reviews []Review
+	err := table.Scan().All(&reviews)
+	if err != nil {
+		if errors.Is(err, dynamo.ErrNotFound) {
+			return reviews, errors.New("reviews not found")
+		}
+		return reviews, err
+	}
+	return reviews, nil
 }
