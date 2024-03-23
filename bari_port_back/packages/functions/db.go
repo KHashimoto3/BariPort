@@ -32,7 +32,7 @@ type Project struct {
 
 //companyのデータを取得
 func GetCompany(companyId string) (Company, error) {
-	table := connect("companies")
+	table := connect("khashimoto3-bari-port-back-prod-companies")
 	var company Company
 	err := table.Get("id", companyId).One(&company)
 	if err != nil {
