@@ -44,11 +44,19 @@ type Review struct {
 	SendAt          string `dynamo:"sendAt"`
 }
 
+// chat_roomsテーブル
+type ChatRoom struct {
+	Id        string `dynamo:"id"`
+	Name      string `dynamo:"name"`
+	ProjectId string `dynamo:"projectId"`
+	Type      string `dynamo:"type"`
+}
+
 // chat_room_participantsテーブル
 type ChatRoomParticipant struct {
-	Id 	 string `dynamo:"id"`
+	Id         string `dynamo:"id"`
 	ChatRoomId string `dynamo:"chatRoomId"`
-	UserId	 string `dynamo:"userId"`
+	UserId     string `dynamo:"userId"`
 }
 
 // companyのデータを取得
@@ -89,6 +97,19 @@ func GetReviews() ([]Review, error) {
 		return reviews, err
 	}
 	return reviews, nil
+}
+
+func GetChatRooms() ([]ChatRoom, error) {
+	table := connect(os.Getenv("SST_Table_tableName_chat_rooms"))
+	var chatRooms []ChatRoom
+	err := table.Scan().All(&chatRooms)
+	if err != nil {
+		if errors.Is(err, dynamo.ErrNotFound) {
+			return chatRooms, errors.New("chatRooms not found")
+		}
+		return chatRooms, err
+	}
+	return chatRooms, nil
 }
 
 func PostChatRoomParticipant(chatRoomParticipant ChatRoomParticipant) (bool, error) {

@@ -41,10 +41,18 @@ type GetReviewsResponse struct {
 	Description     string `json:"description"`
 }
 
+type GetChatRoomResponse struct {
+	Id        string `json:"id"`
+	Name      string `json:"name"`
+	ProjectId string `json:"projectId"`
+	Type      string `json:"type"`
+	ImgUrl    string `json:"imgUrl"`
+}
+
 type PostChatRoomParticipantRequest struct {
-	Id 	 string `json:"id"`
+	Id         string `json:"id"`
 	ChatRoomId string `json:"chatRoomId"`
-	UserId	 string `json:"userId"`
+	UserId     string `json:"userId"`
 }
 
 func HandlerHello(ctx context.Context) (events.APIGatewayProxyResponse, error) {
@@ -133,7 +141,34 @@ func HandlerGetReviews(ctx context.Context) (events.APIGatewayProxyResponse, err
 	}, nil
 }
 
-//チャット参加者を送信
+// チャットルーム一覧を返すLambdaハンドラ
+func HandlerChatRooms(ctx context.Context) (events.APIGatewayProxyResponse, error) {
+	chatRooms, err := GetChatRooms()
+
+	if err != nil {
+		return events.APIGatewayProxyResponse{}, err
+	}
+
+	var res []GetChatRoomResponse
+	for _, chatRoom := range chatRooms {
+		res = append(res, GetChatRoomResponse{
+			Id:        chatRoom.Id,
+			Name:      chatRoom.Name,
+			ProjectId: chatRoom.ProjectId,
+			Type:      chatRoom.Type,
+			ImgUrl:    "https://cdn-icons-png.flaticon.com/512/219/219970.png",
+		})
+	}
+
+	body, _ := json.Marshal(res)
+
+	return events.APIGatewayProxyResponse{
+		Body:       string(body),
+		StatusCode: 200,
+	}, nil
+}
+
+// チャット参加者を送信
 func HandlerPutChatRoomParticipant(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	requestBody := request.Body
 
@@ -156,7 +191,7 @@ func HandlerPutChatRoomParticipant(ctx context.Context, request events.APIGatewa
 	})
 
 	return events.APIGatewayProxyResponse{
-		Body: string(body),
+		Body:       string(body),
 		StatusCode: 201,
 	}, nil
 }
