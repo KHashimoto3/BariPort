@@ -112,7 +112,7 @@ func GetMessages() ([]Message, error) {
 }
 
 func GetChatRooms() ([]ChatRoom, error) {
-	table := connect(os.Getenv("SST_Table_tableName_users"))
+	table := connect(os.Getenv("SST_Table_tableName_chatRooms"))
 	var chatRooms []ChatRoom
 	err := table.Scan().All(&chatRooms)
 	if err != nil {
