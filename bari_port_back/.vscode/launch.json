@@ -13,6 +13,7 @@
         "SST_Table_tableName_projects": "khashimoto3-bari-port-back-prod-projects",
         "SST_Table_tableName_companies": "khashimoto3-bari-port-back-prod-companies",
         "SST_Table_tableName_reviews": "khashimoto3-bari-port-back-prod-reviews",
+        "SST_Table_tableName_chat_rooms": "khashimoto3-bari-port-back-prod-chat-rooms",
         "SST_Table_tableName_chat_room_participants": "khashimoto3-bari-port-back-prod-chat-room-participants"
       }
     },
@@ -28,6 +29,7 @@
         "SST_Table_tableName_projects": "prod-bari-port-back-prod-projects",
         "SST_Table_tableName_companies": "prod-bari-port-back-prod-companies",
         "SST_Table_tableName_reviews": "prod-bari-port-back-prod-reviews",
+        "SST_Table_tableName_chat_rooms": "prod-bari-port-back-prod-chat-rooms",
         "SST_Table_tableName_chat_room_participants": "prod-bari-port-back-prod-chat-room-participants"
       }
     }
