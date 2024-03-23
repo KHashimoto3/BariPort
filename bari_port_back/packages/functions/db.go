@@ -26,7 +26,7 @@ type Company struct {
 // projectsテーブル
 type Project struct {
 	Id          string `dynamo:"id"`
-	projectName string `dynamo:"projectName"`
+	ProjectName string `dynamo:"projectName"`
 	CompanyId   string `dynamo:"companyId"`
 	ProjectId   string `dynamo:"projectId"`
 	Description string `dynamo:"description"`
@@ -53,8 +53,8 @@ type ChatRoom struct {
 	Name                string `dynamo:"name"`
 	Type                int    `dynamo:"type"`
 	ImgUrl              string `dynamo:"imgUrl"`
-	latestMessage       string `dynamo:"latestMessage"`
-	latestMessageSendAt string `dynamo:"imgUrl"`
+	LatestMessage       string `dynamo:"latestMessage"`
+	LatestMessageSendAt string `dynamo:"imgUrl"`
 }
 
 // chat_room_participantsテーブル
