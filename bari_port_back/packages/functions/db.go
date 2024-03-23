@@ -54,7 +54,7 @@ type ChatRoom struct {
 	Type                int    `dynamo:"type"`
 	ImgUrl              string `dynamo:"imgUrl"`
 	LatestMessage       string `dynamo:"latestMessage"`
-	LatestMessageSendAt string `dynamo:"imgUrl"`
+	LatestMessageSendAt string `dynamo:"latestMessageSendAt"`
 }
 
 // chat_room_participantsテーブル
