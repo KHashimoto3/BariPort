@@ -49,11 +49,11 @@ type GetMessageProject struct {
 
 type GetMessagesForResponse struct {
 	Id       string             `json:"id"`
-	User     GetMessageUser     `json:"userId"`
-	ChatRoom GetMessageChatRoom `json:"chatRoomId"`
+	UserName     string     `json:"userName"`
 	Text     string             `json:"text"`
 	ImgUrl   string             `json:"imgUrl"`
 	SendAt   string             `json:"sendAt"`
+	IsMine   string             `json:"isMine"`
 }
 
 type GetMessagesResponse struct {
@@ -140,60 +140,50 @@ func HandlerGetProjects(ctx context.Context) (events.APIGatewayProxyResponse, er
 // メッセージ一覧を返すLambdaハンドラ
 func HandlerGetMessages(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	chatRoomId := request.QueryStringParameters["chatRoomId"]
+	userId := request.QueryStringParameters["userId"]
 
-	allMessages, err := GetMessages()
+	messages, err := GetMessages(chatRoomId)
+
 	if err != nil {
 		return events.APIGatewayProxyResponse{}, err
 	}
 
-	// チャットルームを取得
-	chatRoomRes, err := GetChatRoom(chatRoomId)
+	project, err := GetProjectByChatRoomId(chatRoomId)
+
 	if err != nil {
 		return events.APIGatewayProxyResponse{}, err
 	}
 
-	// メッセージのフィルタリングとユーザー情報の取得
-	var messagesInChatRoom []GetMessagesForResponse
-	for _, message := range allMessages {
-		if message.ChatRoomId == chatRoomId {
-			userRes, err := GetUser(message.UserId)
-			if err != nil {
-				return events.APIGatewayProxyResponse{}, err
-			}
-			user := GetMessageUser{
-				Id:          userRes.Id,
-				DisplayName: userRes.DisplayName,
-				ApiKey:      userRes.ApiKey,
-			}
+	var res []GetMessagesForResponse
 
-			messagesInChatRoom = append(messagesInChatRoom, GetMessagesForResponse{
-				Id:   message.Id,
-				User: user,
-				ChatRoom: GetMessageChatRoom{
-					Id:        chatRoomRes.Id,
-					Name:      chatRoomRes.Name,
-					ProjectId: chatRoomRes.ProjectId,
-				},
-				Text:   message.Text,
-				ImgUrl: message.ImgUrl,
-				SendAt: message.SendAt,
-			})
+	for _, message := range messages {
+		user, err := GetUser(message.UserId)
+		if err != nil {
+			return events.APIGatewayProxyResponse{}, err
 		}
+
+		var isMine string
+
+		if message.UserId == userId {
+			isMine = "true"
+		} else {
+			isMine = "false"
+		}
+
+		res = append(res, GetMessagesForResponse{
+				Id:       message.Id,
+				UserName: user.DisplayName,
+				Text:     message.Text,
+				ImgUrl:   message.ImgUrl,
+				SendAt:   message.SendAt,
+				IsMine:   isMine,
+		})
 	}
 
-	// プロジェクト情報の取得
-	projectRes, err := GetProject(chatRoomId)
-	if err != nil {
-		return events.APIGatewayProxyResponse{}, err
-	}
-
-	// 最終的なレスポンスの構築
-	res := GetMessagesResponse{
-		Messages: messagesInChatRoom,
-		TestUrl:  projectRes.TestUrl,
-	}
-
-	body, _ := json.Marshal(res)
+	body, _ := json.Marshal(GetMessagesResponse{
+		Messages: res,
+		TestUrl:  project.TestUrl,
+	})
 
 	return events.APIGatewayProxyResponse{
 		Body:       string(body),
@@ -282,7 +272,7 @@ func HandlerPostMessage(ctx context.Context, request events.APIGatewayProxyReque
 	utcTime := localTime.UTC()
 	sendTime := utcTime.Format("2006-01-02T15:04:05Z")
 
-	message := Messages{
+	message := Message{
 		Id: messageRequest.Id,
 		UserId: messageRequest.UserId,
 		CompanyId: messageRequest.CompanyId,
