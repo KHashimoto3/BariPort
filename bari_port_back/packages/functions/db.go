@@ -1,6 +1,8 @@
 package bariport
 
 import (
+	"errors"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/guregu/dynamo"
@@ -34,16 +36,22 @@ func GetCompany(companyId string) (Company, error) {
 	var company Company
 	err := table.Get("id", companyId).One(&company)
 	if err != nil {
+		if errors.Is(err, dynamo.ErrNotFound) {
+			return company, errors.New("company not found")
+		}
 		return company, err
 	}
 	return company, nil
 }
 
 func GetProjects() ([]Project, error) {
-	table := connect("projects")
+	table := connect("khashimoto3-bari-port-back-prod-projects")
 	var projects []Project
 	err := table.Scan().All(&projects)
 	if err != nil {
+		if errors.Is(err, dynamo.ErrNotFound) {
+			return projects, errors.New("projects not found")
+		}
 		return projects, err
 	}
 	return projects, nil
