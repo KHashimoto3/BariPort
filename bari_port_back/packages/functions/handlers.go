@@ -149,50 +149,45 @@ func HandlerGetProjects(ctx context.Context) (events.APIGatewayProxyResponse, er
 
 // メッセージ一覧を返すLambdaハンドラ
 func HandlerGetMessages(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	chatRoomId := request.QueryStringParameters["chatRoomId"]
-	userId := request.QueryStringParameters["userId"]
+	charRoomId := request.QueryStringParameters["chatRoomId"]
+	loginUserId := request.QueryStringParameters["loginUserId"]
 
-	messages, err := GetMessages(chatRoomId)
-
-	if err != nil {
-		return events.APIGatewayProxyResponse{}, err
-	}
-
-	project, err := GetProjectByChatRoomId(chatRoomId)
+	//すべてのmessageを取得
+	messages, err := GetMessages()
 
 	if err != nil {
 		return events.APIGatewayProxyResponse{}, err
 	}
 
+	//chatRoomIdに一致するmessageに対してuserIdを取得し、userNameが一致したらisMineをtrueにする
 	var res []GetMessagesForResponse
-
 	for _, message := range messages {
-		user, err := GetUser(message.UserId)
-		if err != nil {
-			return events.APIGatewayProxyResponse{}, err
-		}
+		if message.ChatRoomId == charRoomId {
+			user, err := GetUser(message.UserId)
+			if err != nil {
+				return events.APIGatewayProxyResponse{}, err
+			}
 
-		var isMine string
+			isMine := "false"
 
-		if message.UserId == userId {
-			isMine = "true"
-		} else {
-			isMine = "false"
-		}
+			if user.Id == loginUserId {
+				isMine = "true"
+			}
 
-		res = append(res, GetMessagesForResponse{
+			res = append(res, GetMessagesForResponse{
 				Id:       message.Id,
 				UserName: user.DisplayName,
 				Text:     message.Text,
 				ImgUrl:   message.ImgUrl,
 				SendAt:   message.SendAt,
 				IsMine:   isMine,
-		})
+			})
+		}
 	}
 
 	body, _ := json.Marshal(GetMessagesResponse{
 		Messages: res,
-		TestUrl:  project.TestUrl,
+		TestUrl:  "https://apps.apple.com/jp/app/testflight/id899247664",
 	})
 
 	return events.APIGatewayProxyResponse{

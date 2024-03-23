@@ -135,10 +135,10 @@ func GetProjectByChatRoomId(chatRoomId string) (Project, error) {
 	return project, nil
 }
 
-func GetMessages(chatRoomId string) ([]Message, error) {
+func GetMessages() ([]Message, error) {
 	table := connect(os.Getenv("SST_Table_tableName_messages"))
 	var messages []Message
-	err := table.Get("chatRoomId", chatRoomId).Index("chatRoomId-index").All(&messages)
+	err := table.Scan().All(&messages)
 	if err != nil {
 		if errors.Is(err, dynamo.ErrNotFound) {
 			return messages, errors.New("messages not found")
