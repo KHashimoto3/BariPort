@@ -78,6 +78,18 @@ type ChatRoomParticipant struct {
 	UserId     string `dynamo:"userId"`
 }
 
+//messagesテーブル
+type Messages struct {
+	Id string `dynamo:"id"`
+	UserId string `dynamo:"userId"`
+	CompanyId string `dynamo:"companyId"`
+	ChatRoomId string `dynamo:"chatRoomId"`
+	Text string `dynamo:"text"`
+	ImgUrl string `dynamo:"imgUrl"`
+	IsMine string `dynamo:"isMine"`
+	SendAt string `dynamo:"sendAt"`
+}
+
 // companyのデータを取得
 func GetCompany(companyId string) (Company, error) {
 	table := connect(os.Getenv("SST_Table_tableName_companies"))
@@ -174,6 +186,17 @@ func PostChatRoomParticipant(chatRoomParticipant ChatRoomParticipant) (bool, err
 	table := connect(os.Getenv("SST_Table_tableName_chat_room_participants"))
 
 	err := table.Put(chatRoomParticipant).Run()
+	if err != nil {
+		return false, err
+	}
+
+	return true, nil
+}
+
+func PostMessage(message Messages) (bool, error) {
+	table := connect(os.Getenv("SST_Table_tableName_messages"))
+
+	err := table.Put(message).Run()
 	if err != nil {
 		return false, err
 	}
