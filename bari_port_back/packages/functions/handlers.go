@@ -17,11 +17,11 @@ type GetProjectCompany struct {
 }
 
 type GetProjectsResponse struct {
-<<<<<<< HEAD
-	Id          string            `json:"id"`
-	Name        string            `json:"name"`
-	Description string            `json:"description"`
-	Company     GetProjectCompany `json:"company"`
+	CompanyName string `json:"companyName"`
+	ProjectName string `json:"projectName"`
+	Description string `json:"description"`
+	TestUrl     string `json:"testUrl"`
+	ChatRoomId  string `json:"chatRoomId"`
 }
 
 type GetMessageChatRoom struct {
@@ -45,12 +45,6 @@ type GetMessagesResponse struct {
 	Text     string             `dynamo:"text"`
 	ImgUrl   string             `dynamo:"imgUrl"`
 	SendAt   string             `dynamo:"sendAt"`
-=======
-	CompanyName string `json:"companyName"`
-	ProjectName string `json:"projectName"`
-	Description string `json:"description"`
-	TestUrl     string `json:"testUrl"`
-	ChatRoomId  string `json:"chatRoomId"`
 }
 
 type GetReviewCompany struct {
@@ -64,7 +58,6 @@ type GetReviewsResponse struct {
 	CompanyName     string `json:"companyName"`
 	EvaluationScore int    `json:"evaluationScore"`
 	Description     string `json:"description"`
->>>>>>> fbcabf00f0b295fe419fcd1cde6ca83f9b2225df
 }
 
 func HandlerHello(ctx context.Context) (events.APIGatewayProxyResponse, error) {
@@ -99,18 +92,11 @@ func HandlerGetProjects(ctx context.Context) (events.APIGatewayProxyResponse, er
 		}
 
 		res = append(res, GetProjectsResponse{
-<<<<<<< HEAD
-			Id:          project.Id,
-			Name:        project.Name,
-			Description: project.Description,
-			Company:     company,
-=======
 			CompanyName: company.Name,
 			ProjectName: "事業名HOGEHOGE",
 			Description: project.Description,
 			TestUrl:     project.TestUrl,
 			ChatRoomId:  project.ChatRoomId,
->>>>>>> fbcabf00f0b295fe419fcd1cde6ca83f9b2225df
 		})
 	}
 
