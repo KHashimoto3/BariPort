@@ -41,7 +41,7 @@ type Message struct {
 	ChatRoomId string `dynamo:"chatRoomId"`
 	Text       string `dynamo:"text"`
 	ImgUrl     string `dynamo:"imgUrl"`
-	IsMine     bool   `dynamo:"isMine"`
+	IsMine     string `dynamo:"isMine"`
 	SendAt     string `dynamo:"sendAt"`
 }
 
@@ -73,9 +73,9 @@ type Review struct {
 
 // chat_room_participantsテーブル
 type ChatRoomParticipant struct {
-	Id 	 string `dynamo:"id"`
+	Id         string `dynamo:"id"`
 	ChatRoomId string `dynamo:"chatRoomId"`
-	UserId	 string `dynamo:"userId"`
+	UserId     string `dynamo:"userId"`
 }
 
 // companyのデータを取得
