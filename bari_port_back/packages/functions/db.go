@@ -111,17 +111,17 @@ func GetMessages() ([]Message, error) {
 	return messages, nil
 }
 
-func GetChatRooms() ([]ChatRoom, error) {
+func GetChatRoom(chatRoomId string) (ChatRoom, error) {
 	table := connect(os.Getenv("SST_Table_tableName_chatRooms"))
-	var chatRooms []ChatRoom
-	err := table.Scan().All(&chatRooms)
+	var chatRoom ChatRoom
+	err := table.Get("id", chatRoomId).One(&chatRoom)
 	if err != nil {
 		if errors.Is(err, dynamo.ErrNotFound) {
-			return chatRooms, errors.New("chatRooms not found")
+			return chatRoom, errors.New("chatRoom not found")
 		}
-		return chatRooms, err
+		return chatRoom, err
 	}
-	return chatRooms, nil
+	return chatRoom, nil
 }
 
 func GetUser(userId string) (User, error) {

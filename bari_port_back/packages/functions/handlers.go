@@ -25,26 +25,26 @@ type GetProjectsResponse struct {
 }
 
 type GetMessageChatRoom struct {
-	Id     string `dynamo:"id"`
-	Name   string `dynamo:"text"`
-	ImgUrl string `dynamo:"imgUrl"`
-	IsMine bool   `dynamo:"isMine"`
-	SendAt string `dynamo:"sendAt"`
+	Id     string `json:"id"`
+	Name   string `json:"text"`
+	ImgUrl string `json:"imgUrl"`
+	IsMine bool   `json:"isMine"`
+	SendAt string `json:"sendAt"`
 }
 
 type GetMessageUser struct {
-	Id          string `dynamo:"id"`
-	DisplayName string `dynamo:"displayName"`
-	ApiKey      string `dynamo:"apiKey"`
+	Id          string `json:"id"`
+	DisplayName string `json:"displayName"`
+	ApiKey      string `json:"apiKey"`
 }
 
 type GetMessagesResponse struct {
-	Id       string             `dynamo:"id"`
-	User     GetMessageUser     `dynamo:"userId"`
-	ChatRoom GetMessageChatRoom `dynamo:"chatRoomId"`
-	Text     string             `dynamo:"text"`
-	ImgUrl   string             `dynamo:"imgUrl"`
-	SendAt   string             `dynamo:"sendAt"`
+	Id       string             `json:"id"`
+	User     GetMessageUser     `json:"userId"`
+	ChatRoom GetMessageChatRoom `json:"chatRoomId"`
+	Text     string             `json:"text"`
+	ImgUrl   string             `json:"imgUrl"`
+	SendAt   string             `json:"sendAt"`
 }
 
 type GetReviewCompany struct {
@@ -126,7 +126,7 @@ func HandlerGetMessages(ctx context.Context, request events.APIGatewayProxyReque
 	}
 
 	// チャットルームを取得
-	chatRoomRes, err := GetChatRooms(chatRoomId)
+	chatRoomRes, err := GetChatRoom(chatRoomId)
 	if err != nil {
 		return events.APIGatewayProxyResponse{}, err
 	}
