@@ -3,6 +3,7 @@ package bariport
 import (
 	"context"
 	"encoding/json"
+	"time"
 
 	"github.com/aws/aws-lambda-go/events"
 )
@@ -53,6 +54,15 @@ type PostChatRoomParticipantRequest struct {
 	Id         string `json:"id"`
 	ChatRoomId string `json:"chatRoomId"`
 	UserId     string `json:"userId"`
+}
+
+type PostMessageRequest struct {
+	Id         string `json:"id"`
+	UserId     string `json:"userId"`
+	CompanyId  string `json:"companyId"`
+	ChatRoomId string `json:"chatRoomId"`
+	Text       string `json:"text"`
+	ImgUrl     string `json:"imgUrl"`
 }
 
 func HandlerHello(ctx context.Context) (events.APIGatewayProxyResponse, error) {
@@ -194,4 +204,47 @@ func HandlerPutChatRoomParticipant(ctx context.Context, request events.APIGatewa
 		Body:       string(body),
 		StatusCode: 201,
 	}, nil
+}
+
+func HandlerPostMessage(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	requestBody := request.Body
+
+	var messageRequest PostMessageRequest
+	err := json.Unmarshal([]byte(requestBody), &messageRequest)
+
+	if err != nil {
+		return events.APIGatewayProxyResponse{}, err
+	}
+
+	//UTC時間を取得
+	localTime := time.Now()
+	utcTime := localTime.UTC()
+	sendTime := utcTime.Format("2006-01-02T15:04:05Z")
+
+	message := Messages{
+		Id:         messageRequest.Id,
+		UserId:     messageRequest.UserId,
+		CompanyId:  messageRequest.CompanyId,
+		ChatRoomId: messageRequest.ChatRoomId,
+		Text:       messageRequest.Text,
+		ImgUrl:     messageRequest.ImgUrl,
+		IsMine:     "false",
+		SendAt:     sendTime,
+	}
+
+	_, err = PostMessage(message)
+
+	if err != nil {
+		return events.APIGatewayProxyResponse{}, err
+	}
+
+	body, _ := json.Marshal(SuccessResponse{
+		Message: "success",
+	})
+
+	return events.APIGatewayProxyResponse{
+		Body:       string(body),
+		StatusCode: 201,
+	}, nil
+
 }
