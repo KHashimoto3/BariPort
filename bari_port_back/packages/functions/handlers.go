@@ -185,6 +185,17 @@ func HandlerGetMessages(ctx context.Context, request events.APIGatewayProxyReque
 		}
 	}
 
+	//resの中身を、sendAtが早い順に並び替える
+	for i := 0; i < len(res); i++ {
+		for j := i + 1; j < len(res); j++ {
+			if res[i].SendAt > res[j].SendAt {
+				tmp := res[i]
+				res[i] = res[j]
+				res[j] = tmp
+			}
+		}
+	}
+
 	body, _ := json.Marshal(GetMessagesResponse{
 		Messages: res,
 		TestUrl:  "https://apps.apple.com/jp/app/testflight/id899247664",
