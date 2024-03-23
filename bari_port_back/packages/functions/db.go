@@ -142,6 +142,46 @@ func GetChatRooms() ([]ChatRoom, error) {
 	return chatRooms, nil
 }
 
+func GetChatRoomsByChatRoomParticipants(ChatRoomParticipantIds []string) ([]ChatRoom, error) {
+	table := connect(os.Getenv("SST_Table_tableName_chat_rooms"))
+	var chatRooms []ChatRoom
+	var filteredChatRooms []ChatRoom
+
+	// DynamoDB から全ての ChatRoom を取得
+	err := table.Scan().All(&chatRooms)
+	if err != nil {
+		if errors.Is(err, dynamo.ErrNotFound) {
+			return nil, errors.New("chatRooms not found")
+		}
+		return nil, err
+	}
+
+	// participantIds に基づいて chatRooms をフィルタリング
+	for _, room := range chatRooms {
+		for _, pid := range ChatRoomParticipantIds {
+			if room.Id == pid { // 仮に ChatRoom.Id が参加者IDと一致する場合を想定
+				filteredChatRooms = append(filteredChatRooms, room)
+				break // 一致する ChatRoom を見つけたら、次の room へ
+			}
+		}
+	}
+
+	return filteredChatRooms, nil
+}
+
+func GetChatRoomParticipantsByUserId(userId string) ([]ChatRoomParticipant, error) {
+	table := connect(os.Getenv("SST_Table_tableName_chat_room_participants"))
+	var chatRoomParticipants []ChatRoomParticipant
+	err := table.Get("userid", userId).All(&chatRoomParticipants)
+	if err != nil {
+		if errors.Is(err, dynamo.ErrNotFound) {
+			return chatRoomParticipants, errors.New("chatRoomParticipants not found")
+		}
+		return chatRoomParticipants, err
+	}
+	return chatRoomParticipants, nil
+}
+
 func PostChatRoomParticipant(chatRoomParticipant ChatRoomParticipant) (bool, error) {
 	table := connect(os.Getenv("SST_Table_tableName_chat_room_participants"))
 

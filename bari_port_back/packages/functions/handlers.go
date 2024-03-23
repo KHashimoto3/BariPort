@@ -154,13 +154,28 @@ func HandlerGetReviews(ctx context.Context) (events.APIGatewayProxyResponse, err
 }
 
 // チャットルーム一覧を返すLambdaハンドラ
-func HandlerChatRooms(ctx context.Context) (events.APIGatewayProxyResponse, error) {
-	chatRooms, err := GetChatRooms()
+func HandlerChatRooms(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	userId := request.QueryStringParameters["userId"]
 
+	// パラメータで受け取った userId が該当する chatRoomParticipants を取得
+	chatRoomParticipants, err := GetChatRoomParticipantsByUserId(userId)
 	if err != nil {
 		return events.APIGatewayProxyResponse{}, err
 	}
 
+	// chatRoomParticipants が所属する chatRoomIds を返す
+	var chatRoomIds []string
+	for _, participant := range chatRoomParticipants {
+		chatRoomIds = append(chatRoomIds, participant.ChatRoomId)
+	}
+
+	// chatRoomIds に紐づく chatRooms を取得
+	chatRooms, err := GetChatRoomsByChatRoomParticipants(chatRoomIds)
+	if err != nil {
+		return events.APIGatewayProxyResponse{}, err
+	}
+
+	// 以上で取得した chatRooms を起点に必要な API を返す
 	var res []GetChatRoomResponse
 	for _, chatRoom := range chatRooms {
 		companyRes, err := GetCompany(chatRoom.CompanyId)
