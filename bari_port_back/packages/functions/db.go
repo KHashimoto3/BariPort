@@ -98,6 +98,19 @@ func GetProjects() ([]Project, error) {
 	return projects, nil
 }
 
+func GetProject(projectId string) (Project, error) {
+	table := connect(os.Getenv("SST_Table_tableName_projects"))
+	var project Project
+	err := table.Get("id", projectId).One(&project)
+	if err != nil {
+		if errors.Is(err, dynamo.ErrNotFound) {
+			return project, errors.New("project not found")
+		}
+		return project, err
+	}
+	return project, nil
+}
+
 func GetMessages() ([]Message, error) {
 	table := connect(os.Getenv("SST_Table_tableName_messages"))
 	var messages []Message
