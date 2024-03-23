@@ -46,10 +46,14 @@ type Review struct {
 
 // chat_roomsテーブル
 type ChatRoom struct {
-	Id        string `dynamo:"id"`
-	Name      string `dynamo:"name"`
-	ProjectId string `dynamo:"projectId"`
-	Type      string `dynamo:"type"`
+	Id                  string `dynamo:"id"`
+	CompanyId           string `dynamo:"companyId"`
+	ProjectId           string `dynamo:"projectId"`
+	Name                string `dynamo:"name"`
+	Type                string `dynamo:"type"`
+	ImgUrl              string `dynamo:"imgUrl"`
+	latestMessage       string `dynamo:"latestMessage"`
+	latestMessageSendAt string `dynamo:"imgUrl"`
 }
 
 // chat_room_participantsテーブル
@@ -59,16 +63,16 @@ type ChatRoomParticipant struct {
 	UserId     string `dynamo:"userId"`
 }
 
-//messagesテーブル
+// messagesテーブル
 type Messages struct {
-	Id string `dynamo:"id"`
-	UserId string `dynamo:"userId"`
-	CompanyId string `dynamo:"companyId"`
+	Id         string `dynamo:"id"`
+	UserId     string `dynamo:"userId"`
+	CompanyId  string `dynamo:"companyId"`
 	ChatRoomId string `dynamo:"chatRoomId"`
-	Text string `dynamo:"text"`
-	ImgUrl string `dynamo:"imgUrl"`
-	IsMine string `dynamo:"isMine"`
-	SendAt string `dynamo:"sendAt"`
+	Text       string `dynamo:"text"`
+	ImgUrl     string `dynamo:"imgUrl"`
+	IsMine     string `dynamo:"isMine"`
+	SendAt     string `dynamo:"sendAt"`
 }
 
 // companyのデータを取得
@@ -96,6 +100,19 @@ func GetProjects() ([]Project, error) {
 		return projects, err
 	}
 	return projects, nil
+}
+
+func GetProject(projectId string) (Project, error) {
+	table := connect(os.Getenv("SST_Table_tableName_projects"))
+	var project Project
+	err := table.Get("id", projectId).One(&project)
+	if err != nil {
+		if errors.Is(err, dynamo.ErrNotFound) {
+			return project, errors.New("project not found")
+		}
+		return project, err
+	}
+	return project, nil
 }
 
 func GetReviews() ([]Review, error) {

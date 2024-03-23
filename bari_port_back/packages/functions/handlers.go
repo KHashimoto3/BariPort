@@ -43,11 +43,13 @@ type GetReviewsResponse struct {
 }
 
 type GetChatRoomResponse struct {
-	Id        string `json:"id"`
-	Name      string `json:"name"`
-	ProjectId string `json:"projectId"`
-	Type      string `json:"type"`
-	ImgUrl    string `json:"imgUrl"`
+	Id                  string `json:"id"`
+	Name                string `json:"name"`
+	CompanyName         string `json:"companyName"`
+	ProjectName         string `json:"projectName"`
+	ImgUrl              string `json:"imgUrl"`
+	LatestMessage       string `json:"latestMessage"`
+	LatestMessageSendAt string `json:"latestMessageSendAt"`
 }
 
 type PostChatRoomParticipantRequest struct {
@@ -161,12 +163,24 @@ func HandlerChatRooms(ctx context.Context) (events.APIGatewayProxyResponse, erro
 
 	var res []GetChatRoomResponse
 	for _, chatRoom := range chatRooms {
+		companyRes, err := GetCompany(chatRoom.CompanyId)
+		if err != nil {
+			return events.APIGatewayProxyResponse{}, err
+		}
+
+		projectRes, err := GetProject(chatRoom.ProjectId)
+		if err != nil {
+			return events.APIGatewayProxyResponse{}, err
+		}
+
 		res = append(res, GetChatRoomResponse{
-			Id:        chatRoom.Id,
-			Name:      chatRoom.Name,
-			ProjectId: chatRoom.ProjectId,
-			Type:      chatRoom.Type,
-			ImgUrl:    "https://cdn-icons-png.flaticon.com/512/219/219970.png",
+			Id:                  chatRoom.Id,
+			Name:                chatRoom.Name,
+			CompanyName:         companyRes.Name,
+			ProjectName:         projectRes.ProjectName,
+			ImgUrl:              chatRoom.ImgUrl,
+			LatestMessage:       chatRoom.latestMessage,
+			LatestMessageSendAt: chatRoom.latestMessageSendAt,
 		})
 	}
 
