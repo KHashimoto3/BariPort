@@ -52,6 +52,7 @@ export function BariPortStack({ stack }: StackContext) {
       userId: "string",
       evaluationScore: "number",
       description: "string",
+      imageUrl: "string",
       sendAt: "string",
     },
     primaryIndex: { partitionKey: "id" },
