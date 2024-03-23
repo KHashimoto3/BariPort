@@ -51,7 +51,7 @@ type ChatRoom struct {
 	CompanyId           string `dynamo:"companyId"`
 	ProjectId           string `dynamo:"projectId"`
 	Name                string `dynamo:"name"`
-	Type                string `dynamo:"type"`
+	Type                int    `dynamo:"type"`
 	ImgUrl              string `dynamo:"imgUrl"`
 	latestMessage       string `dynamo:"latestMessage"`
 	latestMessageSendAt string `dynamo:"imgUrl"`
