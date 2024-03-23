@@ -2,6 +2,7 @@ package bariport
 
 import (
 	"errors"
+	"os"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -32,7 +33,7 @@ type Project struct {
 
 //companyのデータを取得
 func GetCompany(companyId string) (Company, error) {
-	table := connect("khashimoto3-bari-port-back-prod-companies")
+	table := connect(os.Getenv("SST_Table_tableName_companies"))
 	var company Company
 	err := table.Get("id", companyId).One(&company)
 	if err != nil {
@@ -45,7 +46,7 @@ func GetCompany(companyId string) (Company, error) {
 }
 
 func GetProjects() ([]Project, error) {
-	table := connect("khashimoto3-bari-port-back-prod-projects")
+	table := connect(os.Getenv("SST_Table_tableName_projects"))
 	var projects []Project
 	err := table.Scan().All(&projects)
 	if err != nil {

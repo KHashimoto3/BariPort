@@ -9,7 +9,11 @@
       "runtimeArgs": ["start", "--increase-timeout"],
       "console": "integratedTerminal",
       "skipFiles": ["<node_internals>/**"],
-      "env": {}
+      "env": {
+        "SST_Table_tableName_projects": "khashimoto3-bari-port-back-prod-projects",
+        "SST_Table_tableName_companies": "khashimoto3-bari-port-back-prod-companies"
+      }
     }
   ]
 }
+l
