@@ -11,6 +11,10 @@ type HelloResponse struct {
 	Message string `json:"message"`
 }
 
+type SuccessResponse struct {
+	Message string `json:"message"`
+}
+
 type GetProjectCompany struct {
 	Id   string `json:"id"`
 	Name string `json:"name"`
@@ -67,6 +71,12 @@ type GetReviewsResponse struct {
 	CompanyName     string `json:"companyName"`
 	EvaluationScore int    `json:"evaluationScore"`
 	Description     string `json:"description"`
+}
+
+type PostChatRoomParticipantRequest struct {
+	Id 	 string `json:"id"`
+	ChatRoomId string `json:"chatRoomId"`
+	UserId	 string `json:"userId"`
 }
 
 func HandlerHello(ctx context.Context) (events.APIGatewayProxyResponse, error) {
@@ -216,5 +226,33 @@ func HandlerGetReviews(ctx context.Context) (events.APIGatewayProxyResponse, err
 	return events.APIGatewayProxyResponse{
 		Body:       string(body),
 		StatusCode: 200,
+	}, nil
+}
+
+//チャット参加者を送信
+func HandlerPutChatRoomParticipant(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	requestBody := request.Body
+
+	var chatRoomParticipant ChatRoomParticipant
+
+	err := json.Unmarshal([]byte(requestBody), &chatRoomParticipant)
+
+	if err != nil {
+		return events.APIGatewayProxyResponse{}, err
+	}
+
+	_, err = PostChatRoomParticipant(chatRoomParticipant)
+
+	if err != nil {
+		return events.APIGatewayProxyResponse{}, err
+	}
+
+	body, _ := json.Marshal(SuccessResponse{
+		Message: "success",
+	})
+
+	return events.APIGatewayProxyResponse{
+		Body: string(body),
+		StatusCode: 201,
 	}, nil
 }
