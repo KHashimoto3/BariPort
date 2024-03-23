@@ -26,8 +26,9 @@ type Company struct {
 // projectsテーブル
 type Project struct {
 	Id          string `dynamo:"id"`
+	ProjectName string `dynamo:"projectName"`
 	CompanyId   string `dynamo:"companyId"`
-	ProjectName string `dynamo:"name"`
+	ProjectId   string `dynamo:"projectId"`
 	Description string `dynamo:"description"`
 	TestUrl     string `dynamo:"testUrl"`
 	ChatRoomId  string `dynamo:"chatRoomId"`
@@ -44,23 +45,35 @@ type Review struct {
 	SendAt          string `dynamo:"sendAt"`
 }
 
-// chat_room_participantsテーブル
-type ChatRoomParticipant struct {
-	Id 	 string `dynamo:"id"`
-	ChatRoomId string `dynamo:"chatRoomId"`
-	UserId	 string `dynamo:"userId"`
+// chat_roomsテーブル
+type ChatRoom struct {
+	Id                  string `dynamo:"id"`
+	CompanyId           string `dynamo:"companyId"`
+	ProjectId           string `dynamo:"projectId"`
+	Name                string `dynamo:"name"`
+	Type                int    `dynamo:"type"`
+	ImgUrl              string `dynamo:"imgUrl"`
+	LatestMessage       string `dynamo:"latestMessage"`
+	LatestMessageSendAt string `dynamo:"latestMessageSendAt"`
 }
 
-//messagesテーブル
-type Messages struct {
-	Id string `dynamo:"id"`
-	UserId string `dynamo:"userId"`
-	CompanyId string `dynamo:"companyId"`
+// chat_room_participantsテーブル
+type ChatRoomParticipant struct {
+	Id         string `dynamo:"id"`
 	ChatRoomId string `dynamo:"chatRoomId"`
-	Text string `dynamo:"text"`
-	ImgUrl string `dynamo:"imgUrl"`
-	IsMine string `dynamo:"isMine"`
-	SendAt string `dynamo:"sendAt"`
+	UserId     string `dynamo:"userId"`
+}
+
+// messagesテーブル
+type Messages struct {
+	Id         string `dynamo:"id"`
+	UserId     string `dynamo:"userId"`
+	CompanyId  string `dynamo:"companyId"`
+	ChatRoomId string `dynamo:"chatRoomId"`
+	Text       string `dynamo:"text"`
+	ImgUrl     string `dynamo:"imgUrl"`
+	IsMine     string `dynamo:"isMine"`
+	SendAt     string `dynamo:"sendAt"`
 }
 
 // companyのデータを取得
@@ -90,6 +103,19 @@ func GetProjects() ([]Project, error) {
 	return projects, nil
 }
 
+func GetProject(projectId string) (Project, error) {
+	table := connect(os.Getenv("SST_Table_tableName_projects"))
+	var project Project
+	err := table.Get("id", projectId).One(&project)
+	if err != nil {
+		if errors.Is(err, dynamo.ErrNotFound) {
+			return project, errors.New("project not found")
+		}
+		return project, err
+	}
+	return project, nil
+}
+
 func GetReviews() ([]Review, error) {
 	table := connect(os.Getenv("SST_Table_tableName_reviews"))
 	var reviews []Review
@@ -101,6 +127,19 @@ func GetReviews() ([]Review, error) {
 		return reviews, err
 	}
 	return reviews, nil
+}
+
+func GetChatRooms() ([]ChatRoom, error) {
+	table := connect(os.Getenv("SST_Table_tableName_chat_rooms"))
+	var chatRooms []ChatRoom
+	err := table.Scan().All(&chatRooms)
+	if err != nil {
+		if errors.Is(err, dynamo.ErrNotFound) {
+			return chatRooms, errors.New("chatRooms not found")
+		}
+		return chatRooms, err
+	}
+	return chatRooms, nil
 }
 
 func PostChatRoomParticipant(chatRoomParticipant ChatRoomParticipant) (bool, error) {
