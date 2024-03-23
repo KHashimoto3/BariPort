@@ -11,7 +11,8 @@
       "skipFiles": ["<node_internals>/**"],
       "env": {
         "SST_Table_tableName_projects": "khashimoto3-bari-port-back-prod-projects",
-        "SST_Table_tableName_companies": "khashimoto3-bari-port-back-prod-companies"
+        "SST_Table_tableName_companies": "khashimoto3-bari-port-back-prod-companies",
+        "SST_Table_tableName_reviews": "khashimoto3-bari-port-back-prod-reviews"
       }
     },
     {
@@ -24,9 +25,9 @@
       "skipFiles": ["<node_internals>/**"],
       "env": {
         "SST_Table_tableName_projects": "prod-bari-port-back-prod-projects",
-        "SST_Table_tableName_companies": "prod-bari-port-back-prod-companies"
+        "SST_Table_tableName_companies": "prod-bari-port-back-prod-companies",
+        "SST_Table_tableName_reviews": "prod-bari-port-back-prod-reviews"
       }
     }
   ]
 }
-l
