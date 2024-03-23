@@ -70,7 +70,7 @@ func GetProjects() ([]Project, error) {
 }
 
 func GetReviews() ([]Review, error) {
-	table := connect(os.Getenv("SST_Table_tableName_projects"))
+	table := connect(os.Getenv("SST_Table_tableName_reviews"))
 	var reviews []Review
 	err := table.Scan().All(&reviews)
 	if err != nil {
