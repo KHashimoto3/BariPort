@@ -94,6 +94,7 @@ export function BariPortStack({ stack }: StackContext) {
     //API Endpoints
     routes: {
       "GET /hello": "packages/functions/handlers/hello.go",
+      "GET /projects/list": "packages/functions/handlers/getProjects.go",
     },
   });
 
