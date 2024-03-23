@@ -27,8 +27,10 @@ type Company struct {
 type Project struct {
 	Id 			string `dynamo:"id"`
 	CompanyId 	string `dynamo:"companyId"`
-	Name 		string `dynamo:"name"`
+	ProjectName 		string `dynamo:"name"`
 	Description string `dynamo:"description"`
+	TestUrl 	string `dynamo:"testUrl"`
+	ChatRoomId 	string `dynamo:"chatRoomId"`
 }
 
 //companyのデータを取得
