@@ -255,18 +255,24 @@ func HandlerChatRooms(ctx context.Context, request events.APIGatewayProxyRequest
 		return events.APIGatewayProxyResponse{}, err
 	}
 
-	// userId を持つ chatRoomParticipants を取得する
-	var chatRoomIds []string
+	// userId を持つ chatRoomParticipantIds を取得する
+	var chatRoomParticipantIds []string
 	for _, chatRoomParticipant := range chatRoomParticipants {
 		if chatRoomParticipant.UserId == userId {
-			chatRoomIds = append(chatRoomIds, chatRoomParticipant.ChatRoomId)
+			chatRoomParticipantIds = append(chatRoomParticipantIds, chatRoomParticipant.ChatRoomId)
 		}
 	}
 
 	// chatRoomIds に紐づく chatRooms を取得
-	chatRooms, err := GetChatRoomsByChatRoomParticipants(chatRoomIds)
-	if err != nil {
-		return events.APIGatewayProxyResponse{}, err
+	chatRooms, err := GetChatRooms()
+	var filteredChatRooms []ChatRoom
+	for _, room := range chatRooms {
+		for _, chatRoomParticipantId := range chatRoomParticipantIds {
+			if room.Id == chatRoomParticipantId {
+				filteredChatRooms = append(filteredChatRooms, room)
+				break // 一致する ChatRoom を見つけたら、次の room へ
+			}
+		}
 	}
 
 	// 以上で取得した chatRooms を起点に必要な API を返す
