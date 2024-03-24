@@ -29,6 +29,38 @@ type GetProjectsResponse struct {
 	ChatRoomId  string `json:"chatRoomId"`
 }
 
+type GetMessageChatRoom struct {
+	Id        string `json:"id"`
+	ProjectId string `json:"projectId"`
+	Name      string `json:"text"`
+	ImgUrl    string `json:"imgUrl"`
+	SendAt    string `json:"sendAt"`
+}
+
+type GetMessageUser struct {
+	Id          string `json:"id"`
+	DisplayName string `json:"displayName"`
+	ApiKey      string `json:"apiKey"`
+}
+
+type GetMessageProject struct {
+	TestUrl string `json:"testUrl"`
+}
+
+type GetMessagesForResponse struct {
+	Id       string             `json:"id"`
+	UserName     string     `json:"userName"`
+	Text     string             `json:"text"`
+	ImgUrl   string             `json:"imgUrl"`
+	SendAt   string             `json:"sendAt"`
+	IsMine   string             `json:"isMine"`
+}
+
+type GetMessagesResponse struct {
+	Messages []GetMessagesForResponse `json:"messages"`
+	TestUrl  string                   `json:"testUrl"`
+}
+
 type GetReviewCompany struct {
 	Name string `json:"name"`
 }
@@ -108,6 +140,66 @@ func HandlerGetProjects(ctx context.Context) (events.APIGatewayProxyResponse, er
 	}
 
 	body, _ := json.Marshal(res)
+
+	return events.APIGatewayProxyResponse{
+		Body:       string(body),
+		StatusCode: 200,
+	}, nil
+}
+
+// メッセージ一覧を返すLambdaハンドラ
+func HandlerGetMessages(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	charRoomId := request.QueryStringParameters["chatRoomId"]
+	loginUserId := request.QueryStringParameters["loginUserId"]
+
+	//すべてのmessageを取得
+	messages, err := GetMessages()
+
+	if err != nil {
+		return events.APIGatewayProxyResponse{}, err
+	}
+
+	//chatRoomIdに一致するmessageに対してuserIdを取得し、userNameが一致したらisMineをtrueにする
+	var res []GetMessagesForResponse
+	for _, message := range messages {
+		if message.ChatRoomId == charRoomId {
+			user, err := GetUser(message.UserId)
+			if err != nil {
+				return events.APIGatewayProxyResponse{}, err
+			}
+
+			isMine := "false"
+
+			if user.Id == loginUserId {
+				isMine = "true"
+			}
+
+			res = append(res, GetMessagesForResponse{
+				Id:       message.Id,
+				UserName: user.DisplayName,
+				Text:     message.Text,
+				ImgUrl:   message.ImgUrl,
+				SendAt:   message.SendAt,
+				IsMine:   isMine,
+			})
+		}
+	}
+
+	//resの中身を、sendAtが早い順に並び替える
+	for i := 0; i < len(res); i++ {
+		for j := i + 1; j < len(res); j++ {
+			if res[i].SendAt > res[j].SendAt {
+				tmp := res[i]
+				res[i] = res[j]
+				res[j] = tmp
+			}
+		}
+	}
+
+	body, _ := json.Marshal(GetMessagesResponse{
+		Messages: res,
+		TestUrl:  "https://apps.apple.com/jp/app/testflight/id899247664",
+	})
 
 	return events.APIGatewayProxyResponse{
 		Body:       string(body),
@@ -235,10 +327,10 @@ func HandlerPostMessage(ctx context.Context, request events.APIGatewayProxyReque
 	utcTime := localTime.UTC()
 	sendTime := utcTime.Format("2006-01-02T15:04:05Z")
 
-	message := Messages{
-		Id:         messageRequest.Id,
-		UserId:     messageRequest.UserId,
-		CompanyId:  messageRequest.CompanyId,
+	message := Message{
+		Id: messageRequest.Id,
+		UserId: messageRequest.UserId,
+		CompanyId: messageRequest.CompanyId,
 		ChatRoomId: messageRequest.ChatRoomId,
 		Text:       messageRequest.Text,
 		ImgUrl:     messageRequest.ImgUrl,
