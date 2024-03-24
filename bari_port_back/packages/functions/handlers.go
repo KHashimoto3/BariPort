@@ -66,12 +66,12 @@ type GetReviewCompany struct {
 }
 
 type GetReviewsResponse struct {
-	Id              string `json:"id"`
-	SendAt          string `json:"sendAt"`
-	ImgUrl          string `json:"imgUrl"`
-	CompanyName     string `json:"companyName"`
-	EvaluationScore float64    `json:"evaluationScore"`
-	Description     string `json:"description"`
+	Id              string  `json:"id"`
+	SendAt          string  `json:"sendAt"`
+	ImgUrl          string  `json:"imgUrl"`
+	CompanyName     string  `json:"companyName"`
+	EvaluationScore float64 `json:"evaluationScore"`
+	Description     string  `json:"description"`
 }
 
 type GetChatRoomResponse struct {
@@ -194,6 +194,10 @@ func HandlerGetMessages(ctx context.Context, request events.APIGatewayProxyReque
 				res[j] = tmp
 			}
 		}
+	}
+
+	if res == nil {
+		res = []GetMessagesForResponse{}
 	}
 
 	body, _ := json.Marshal(GetMessagesResponse{
