@@ -48,12 +48,12 @@ type GetMessageProject struct {
 }
 
 type GetMessagesForResponse struct {
-	Id       string             `json:"id"`
-	UserName     string     `json:"userName"`
-	Text     string             `json:"text"`
-	ImgUrl   string             `json:"imgUrl"`
-	SendAt   string             `json:"sendAt"`
-	IsMine   string             `json:"isMine"`
+	Id       string `json:"id"`
+	UserName string `json:"userName"`
+	Text     string `json:"text"`
+	ImgUrl   string `json:"imgUrl"`
+	SendAt   string `json:"sendAt"`
+	IsMine   string `json:"isMine"`
 }
 
 type GetMessagesResponse struct {
@@ -250,15 +250,17 @@ func HandlerChatRooms(ctx context.Context, request events.APIGatewayProxyRequest
 	userId := request.QueryStringParameters["userId"]
 
 	// パラメータで受け取った userId が該当する chatRoomParticipants を取得
-	chatRoomParticipants, err := GetChatRoomParticipantsByUserId(userId)
+	chatRoomParticipants, err := GetChatRoomParticipants()
 	if err != nil {
 		return events.APIGatewayProxyResponse{}, err
 	}
 
-	// chatRoomParticipants が所属する chatRoomIds を返す
+	// userId を持つ chatRoomParticipants を取得する
 	var chatRoomIds []string
-	for _, participant := range chatRoomParticipants {
-		chatRoomIds = append(chatRoomIds, participant.ChatRoomId)
+	for _, chatRoomParticipant := range chatRoomParticipants {
+		if chatRoomParticipant.UserId == userId {
+			chatRoomIds = append(chatRoomIds, chatRoomParticipant.ChatRoomId)
+		}
 	}
 
 	// chatRoomIds に紐づく chatRooms を取得
@@ -343,9 +345,9 @@ func HandlerPostMessage(ctx context.Context, request events.APIGatewayProxyReque
 	sendTime := utcTime.Format("2006-01-02T15:04:05Z")
 
 	message := Message{
-		Id: messageRequest.Id,
-		UserId: messageRequest.UserId,
-		CompanyId: messageRequest.CompanyId,
+		Id:         messageRequest.Id,
+		UserId:     messageRequest.UserId,
+		CompanyId:  messageRequest.CompanyId,
 		ChatRoomId: messageRequest.ChatRoomId,
 		Text:       messageRequest.Text,
 		ImgUrl:     messageRequest.ImgUrl,

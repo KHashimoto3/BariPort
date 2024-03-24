@@ -227,10 +227,10 @@ func GetChatRoomsByChatRoomParticipants(ChatRoomParticipantIds []string) ([]Chat
 	return filteredChatRooms, nil
 }
 
-func GetChatRoomParticipantsByUserId(userId string) ([]ChatRoomParticipant, error) {
+func GetChatRoomParticipants() ([]ChatRoomParticipant, error) {
 	table := connect(os.Getenv("SST_Table_tableName_chat_room_participants"))
 	var chatRoomParticipants []ChatRoomParticipant
-	err := table.Get("userid", userId).All(&chatRoomParticipants)
+	err := table.Scan().All(&chatRoomParticipants)
 	if err != nil {
 		if errors.Is(err, dynamo.ErrNotFound) {
 			return chatRoomParticipants, errors.New("chatRoomParticipants not found")
