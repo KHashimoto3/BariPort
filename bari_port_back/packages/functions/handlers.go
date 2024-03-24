@@ -70,7 +70,7 @@ type GetReviewsResponse struct {
 	SendAt          string `json:"sendAt"`
 	ImgUrl          string `json:"imgUrl"`
 	CompanyName     string `json:"companyName"`
-	EvaluationScore int    `json:"evaluationScore"`
+	EvaluationScore float64    `json:"evaluationScore"`
 	Description     string `json:"description"`
 }
 
