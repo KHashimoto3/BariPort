@@ -48,12 +48,12 @@ type GetMessageProject struct {
 }
 
 type GetMessagesForResponse struct {
-	Id       string             `json:"id"`
-	UserName     string     `json:"userName"`
-	Text     string             `json:"text"`
-	ImgUrl   string             `json:"imgUrl"`
-	SendAt   string             `json:"sendAt"`
-	IsMine   string             `json:"isMine"`
+	Id       string `json:"id"`
+	UserName string `json:"userName"`
+	Text     string `json:"text"`
+	ImgUrl   string `json:"imgUrl"`
+	SendAt   string `json:"sendAt"`
+	IsMine   string `json:"isMine"`
 }
 
 type GetMessagesResponse struct {
@@ -246,13 +246,41 @@ func HandlerGetReviews(ctx context.Context) (events.APIGatewayProxyResponse, err
 }
 
 // チャットルーム一覧を返すLambdaハンドラ
-func HandlerChatRooms(ctx context.Context) (events.APIGatewayProxyResponse, error) {
-	chatRooms, err := GetChatRooms()
+func HandlerChatRooms(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	userId := request.QueryStringParameters["userId"]
 
+	// chatRoomParticipants を取得
+	chatRoomParticipants, err := GetChatRoomParticipants()
 	if err != nil {
 		return events.APIGatewayProxyResponse{}, err
 	}
 
+	// userId で chatRoomParticipants をフィルタリングし、配列 chatRoomParticipantIds として取得
+	var chatRoomParticipantIds []string
+	for _, chatRoomParticipant := range chatRoomParticipants {
+		if chatRoomParticipant.UserId == userId {
+			chatRoomParticipantIds = append(chatRoomParticipantIds, chatRoomParticipant.ChatRoomId)
+		}
+	}
+
+	// chatRooms を取得
+	chatRooms, err := GetChatRooms()
+	if err != nil {
+		return events.APIGatewayProxyResponse{}, err
+	}
+
+	// chatRoomIds で chatRooms をフィルタリング
+	var filteredChatRooms []ChatRoom
+	for _, room := range chatRooms {
+		for _, chatRoomParticipantId := range chatRoomParticipantIds {
+			if room.Id == chatRoomParticipantId {
+				filteredChatRooms = append(filteredChatRooms, room)
+				break // 一致する ChatRoom を見つけたら、次の room へ
+			}
+		}
+	}
+
+	// 以上で取得した chatRooms を起点に必要な API を返す
 	var res []GetChatRoomResponse
 	for _, chatRoom := range chatRooms {
 		companyRes, err := GetCompany(chatRoom.CompanyId)
@@ -328,9 +356,9 @@ func HandlerPostMessage(ctx context.Context, request events.APIGatewayProxyReque
 	sendTime := utcTime.Format("2006-01-02T15:04:05Z")
 
 	message := Message{
-		Id: messageRequest.Id,
-		UserId: messageRequest.UserId,
-		CompanyId: messageRequest.CompanyId,
+		Id:         messageRequest.Id,
+		UserId:     messageRequest.UserId,
+		CompanyId:  messageRequest.CompanyId,
 		ChatRoomId: messageRequest.ChatRoomId,
 		Text:       messageRequest.Text,
 		ImgUrl:     messageRequest.ImgUrl,

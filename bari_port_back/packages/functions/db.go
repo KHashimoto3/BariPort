@@ -200,6 +200,19 @@ func GetChatRooms() ([]ChatRoom, error) {
 	return chatRooms, nil
 }
 
+func GetChatRoomParticipants() ([]ChatRoomParticipant, error) {
+	table := connect(os.Getenv("SST_Table_tableName_chat_room_participants"))
+	var chatRoomParticipants []ChatRoomParticipant
+	err := table.Scan().All(&chatRoomParticipants)
+	if err != nil {
+		if errors.Is(err, dynamo.ErrNotFound) {
+			return chatRoomParticipants, errors.New("chatRoomParticipants not found")
+		}
+		return chatRoomParticipants, err
+	}
+	return chatRoomParticipants, nil
+}
+
 func PostChatRoomParticipant(chatRoomParticipant ChatRoomParticipant) (bool, error) {
 	table := connect(os.Getenv("SST_Table_tableName_chat_room_participants"))
 
