@@ -249,13 +249,13 @@ func HandlerGetReviews(ctx context.Context) (events.APIGatewayProxyResponse, err
 func HandlerChatRooms(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	userId := request.QueryStringParameters["userId"]
 
-	// パラメータで受け取った userId が該当する chatRoomParticipants を取得
+	// chatRoomParticipants を取得
 	chatRoomParticipants, err := GetChatRoomParticipants()
 	if err != nil {
 		return events.APIGatewayProxyResponse{}, err
 	}
 
-	// userId を持つ chatRoomParticipantIds を取得する
+	// userId で chatRoomParticipants をフィルタリングし、配列 chatRoomParticipantIds として取得
 	var chatRoomParticipantIds []string
 	for _, chatRoomParticipant := range chatRoomParticipants {
 		if chatRoomParticipant.UserId == userId {
@@ -263,8 +263,13 @@ func HandlerChatRooms(ctx context.Context, request events.APIGatewayProxyRequest
 		}
 	}
 
-	// chatRoomIds に紐づく chatRooms を取得
+	// chatRooms を取得
 	chatRooms, err := GetChatRooms()
+	if err != nil {
+		return events.APIGatewayProxyResponse{}, err
+	}
+
+	// chatRoomIds で chatRooms をフィルタリング
 	var filteredChatRooms []ChatRoom
 	for _, room := range chatRooms {
 		for _, chatRoomParticipantId := range chatRoomParticipantIds {
