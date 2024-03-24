@@ -57,7 +57,7 @@ type Review struct {
 	Id              string `dynamo:"id"`
 	CompanyId       string `dynamo:"companyId"`
 	UserId          string `dynamo:"userId"`
-	EvaluationScore int    `dynamo:"evaluationScore"`
+	EvaluationScore float64   `dynamo:"evaluationScore"`
 	ImgUrl          string `dynamo:"imgUrl"`
 	Description     string `dynamo:"description"`
 	SendAt          string `dynamo:"sendAt"`
