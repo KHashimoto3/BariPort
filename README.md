@@ -1,6 +1,8 @@
 # BariPort
 
-JAPAN CONNECT HACKTHON 用の、バックエンドリポジトリ
+JAPAN CONNECT HACKTHON 用の、バックエンドリポジトリ  
+北九州と企業をつなぐための、機会創出プラットフォーム。  
+詳細: https://www.canva.com/design/DAGASPx8zYA/R7OviNV22UJ8oSihdKR5bw/edit?utm_content=DAGASPx8zYA&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
 
 ## 環境構築・実行方法
 
